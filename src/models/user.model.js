@@ -60,7 +60,7 @@ userSchema.pre("save", async function (next){
 //methods
 userSchema.methods.isPasswordCorrect = async function(password) {
         return await bcrypt.compare(password, this.password);
-}
+};
 
 //access token method
 userSchema.methods.generetAccessToken = function(){
@@ -76,7 +76,7 @@ userSchema.methods.generetAccessToken = function(){
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     )
-}
+};
 
 //referess token method
 userSchema.methods.generetRefreshToken = function(){
@@ -89,6 +89,6 @@ userSchema.methods.generetRefreshToken = function(){
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
-}
+};
 
 export const User = model("User", userSchema);
