@@ -107,8 +107,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const { userName, email, password } = req.body;
 
-  if (!userName || !email) {
-    throw new apiError(400, "please provided userName or password");
+  if (!(userName || email)) {
+    throw new apiError(400, "please provided userName or email");
   }
 
   const user = await User.findOne({
@@ -150,32 +150,28 @@ const loginUser = asyncHandler(async (req, res) => {
 
 //logout
 const logOutUser = asyncHandler(async (req, res) => {
-  try {
-    await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        $set: {
-          refreshToken: undefined,
-        },
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
       },
-      {
-        new: true,
-      }
-    );
+    },
+    {
+      new: true,
+    }
+  );
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
-    return res
-      .status(200)
-      .clearCookies("accessToken", options)
-      .clearCookies("refreshToken", options)
-      .json(new apiResponse(200, {}, "user logged out"));
-  } catch (error) {
-    throw new apiError(401, "internal server error", error);
-  }
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new apiResponse(200, {}, "user logged out"));
 });
 
 export { registerUser, loginUser, logOutUser };
